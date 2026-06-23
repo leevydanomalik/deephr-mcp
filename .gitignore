@@ -1,0 +1,4 @@
+# dist/ is intentionally committed so `npx github:leevydanomalik/deephr-mcp`
+# runs with no build step. Rebuild with `bun run build` before committing changes.
+node_modules
+*.tgz

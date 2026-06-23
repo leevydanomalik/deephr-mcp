@@ -1,0 +1,25 @@
+{
+  "name": "deephr-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Read-only MCP server exposing deepHR modules to MCP clients (Claude Code / Desktop).",
+  "bin": { "deephr-mcp": "dist/server.js" },
+  "main": "dist/server.js",
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "prepublishOnly": "bun run build",
+    "scan": "bun run scripts/scan-routes.ts",
+    "test": "bun test",
+    "check": "biome check src"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
