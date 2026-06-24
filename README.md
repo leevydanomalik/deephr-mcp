@@ -22,6 +22,27 @@ claude mcp add deephr -s user \
 only changes `DEEPHR_API_URL` (the deployed backend) and their own login. Needs
 Node >= 18.
 
+## Updating to a new release
+
+The config tracks the `main` branch, so a new release is just a new commit here.
+Two things to know when pulling an update:
+
+1. **npx caches git installs.** Reconnecting the MCP server re-runs the `npx`
+   command, but npx may relaunch a *cached* older build instead of re-fetching
+   `main`. To guarantee you get the latest, clear the cache first, then reconnect:
+
+   ```bash
+   rm -rf ~/.npm/_npx        # drop npx's cached git installs
+   ```
+
+   (Alternatively pin a commit — `npx -y github:leevydanomalik/deephr-mcp#<sha>` —
+   for a deterministic install, at the cost of editing config each release.)
+
+2. **The backend must have the routes too.** This server only proxies; new tools
+   call new `/api/*` endpoints. The backend at your `DEEPHR_API_URL` must be
+   running a version that has them, or the new operations return 404. Updating the
+   MCP client alone is not enough.
+
 ## Run (local dev)
 
 ```bash
