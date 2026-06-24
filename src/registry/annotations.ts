@@ -9,7 +9,10 @@ import type { OperationDef } from "./types";
 type Annotation = { id?: string; summary?: string; query?: z.AnyZodObject };
 
 export const ANNOTATIONS: Record<string, Annotation> = {
-  "payroll.runs": {
+  // payroll.root_3 = GET /api/hcm/payroll (list all payroll runs).
+  // Key uses the scanner-generated id; id field renames it to a readable slug.
+  "payroll.root_3": {
+    id: "payroll.runs",
     summary: "List payroll runs, optionally filtered by status.",
     query: z.object({ status: z.string().optional(), periodId: z.string().optional() }).passthrough(),
   },
@@ -42,6 +45,38 @@ export const ANNOTATIONS: Record<string, Annotation> = {
   // employee-lifecycle
   "employees.stats": { id: "employees.lifecycle_stats" },
   "employees.documents_by_entityType_entityId": { id: "employees.lifecycle_documents" },
+  // Recruitment specialist read capabilities (the `agent/*` surface, shared by the
+  // guided Recruitment Agent page and the MCP).
+  "recruitment.agent_rank": {
+    summary:
+      "Best-first applicant shortlist for a job opening, ranked by skill + experience match. Pass `openingId` (required); optional `limit` (default 10).",
+    query: z.object({ openingId: z.string(), limit: z.coerce.number().int().positive().optional() }).passthrough(),
+  },
+  "recruitment.agent_skill_gap": {
+    summary:
+      "Candidate skill gap: required role competencies minus resume/certification evidence, with coverage %. Pass `applicantId`.",
+    query: z.object({ applicantId: z.string() }).passthrough(),
+  },
+  "recruitment.agent_benchmark": {
+    summary:
+      "Candidate benchmark: internal-cohort percentile + culture fit + pay band. Industry overlay is SIMULATED — say so. Pass `applicantId`.",
+    query: z.object({ applicantId: z.string() }).passthrough(),
+  },
+  "recruitment.agent_interview_questions": {
+    summary:
+      "Recommended interview questions targeting the candidate's skill gaps and under-signalled company values. Pass `applicantId`.",
+    query: z.object({ applicantId: z.string() }).passthrough(),
+  },
+  "recruitment.agent_recommendation": {
+    summary:
+      "Hiring recommendation for a candidate from their interview scorecard plus any recorded decision. Pass `applicantId`.",
+    query: z.object({ applicantId: z.string() }).passthrough(),
+  },
+  "recruitment.agent_screen": {
+    summary:
+      "Candidate screening bundle: resume extraction + screening responses + assessment, in one call. Pass `applicantId`.",
+    query: z.object({ applicantId: z.string() }).passthrough(),
+  },
   // Add more hot operations here as needed.
 };
 

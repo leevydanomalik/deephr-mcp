@@ -39,3 +39,30 @@ describe("employees facade ids", () => {
     }
   });
 });
+
+describe("annotation keys resolve", () => {
+  test("every annotation key maps to a live operation (no orphans)", () => {
+    const liveIds = new Set(Object.values(REGISTRY).flatMap((ops) => ops.map((o) => o.id)));
+    for (const key of Object.keys(ANNOTATIONS)) {
+      // Rename annotations move the id; summary/query annotations keep the key as the id.
+      const resolved = ANNOTATIONS[key].id ?? key;
+      expect(liveIds.has(resolved)).toBe(true);
+    }
+  });
+
+  test("the recruitment specialist agent ops carry non-generic summaries", () => {
+    const byId = new Map(REGISTRY.recruitment.map((o) => [o.id, o]));
+    for (const id of [
+      "recruitment.agent_rank",
+      "recruitment.agent_skill_gap",
+      "recruitment.agent_benchmark",
+      "recruitment.agent_interview_questions",
+      "recruitment.agent_recommendation",
+      "recruitment.agent_screen",
+    ]) {
+      const op = byId.get(id);
+      expect(op).toBeDefined();
+      expect(op?.summary.startsWith("GET ")).toBe(false);
+    }
+  });
+});

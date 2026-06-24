@@ -913,7 +913,8 @@ var analyticsOps = [
 // src/registry/annotations.ts
 import { z as z4 } from "zod";
 var ANNOTATIONS = {
-  "payroll.runs": {
+  "payroll.root_3": {
+    id: "payroll.runs",
     summary: "List payroll runs, optionally filtered by status.",
     query: z4.object({ status: z4.string().optional(), periodId: z4.string().optional() }).passthrough()
   },
@@ -935,7 +936,31 @@ var ANNOTATIONS = {
   "employees.templates": { id: "employees.onboarding_templates" },
   "employees.templates_by_id": { id: "employees.onboarding_template_by_id" },
   "employees.stats": { id: "employees.lifecycle_stats" },
-  "employees.documents_by_entityType_entityId": { id: "employees.lifecycle_documents" }
+  "employees.documents_by_entityType_entityId": { id: "employees.lifecycle_documents" },
+  "recruitment.agent_rank": {
+    summary: "Best-first applicant shortlist for a job opening, ranked by skill + experience match. Pass `openingId` (required); optional `limit` (default 10).",
+    query: z4.object({ openingId: z4.string(), limit: z4.coerce.number().int().positive().optional() }).passthrough()
+  },
+  "recruitment.agent_skill_gap": {
+    summary: "Candidate skill gap: required role competencies minus resume/certification evidence, with coverage %. Pass `applicantId`.",
+    query: z4.object({ applicantId: z4.string() }).passthrough()
+  },
+  "recruitment.agent_benchmark": {
+    summary: "Candidate benchmark: internal-cohort percentile + culture fit + pay band. Industry overlay is SIMULATED — say so. Pass `applicantId`.",
+    query: z4.object({ applicantId: z4.string() }).passthrough()
+  },
+  "recruitment.agent_interview_questions": {
+    summary: "Recommended interview questions targeting the candidate's skill gaps and under-signalled company values. Pass `applicantId`.",
+    query: z4.object({ applicantId: z4.string() }).passthrough()
+  },
+  "recruitment.agent_recommendation": {
+    summary: "Hiring recommendation for a candidate from their interview scorecard plus any recorded decision. Pass `applicantId`.",
+    query: z4.object({ applicantId: z4.string() }).passthrough()
+  },
+  "recruitment.agent_screen": {
+    summary: "Candidate screening bundle: resume extraction + screening responses + assessment, in one call. Pass `applicantId`.",
+    query: z4.object({ applicantId: z4.string() }).passthrough()
+  }
 };
 function applyAnnotations(reg) {
   for (const ops of Object.values(reg)) {
@@ -3275,6 +3300,60 @@ var performanceOps = [
 // src/registry/recruitment.ts
 import { z as z15 } from "zod";
 var recruitmentOps = [
+  {
+    id: "recruitment.agent_benchmark",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/benchmark",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/benchmark"
+  },
+  {
+    id: "recruitment.agent_interview_questions",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/interview-questions",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/interview-questions"
+  },
+  {
+    id: "recruitment.agent_rank",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/rank",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/rank"
+  },
+  {
+    id: "recruitment.agent_recommendation",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/recommendation",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/recommendation"
+  },
+  {
+    id: "recruitment.agent_screen",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/screen",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/screen"
+  },
+  {
+    id: "recruitment.agent_skill_gap",
+    facade: "recruitment",
+    method: "GET",
+    path: "/api/hcm/recruitment/agent/skill-gap",
+    pathParams: [],
+    query: z15.object({}).passthrough(),
+    summary: "GET /api/hcm/recruitment/agent/skill-gap"
+  },
   {
     id: "recruitment.ai_extractions_by_applicantId",
     facade: "recruitment",

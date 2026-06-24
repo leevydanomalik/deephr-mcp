@@ -50,4 +50,33 @@ describe("scanDir", () => {
     expect(byId["payroll.salary_slips_by_id"].pathParams).toEqual(["id"]);
     expect(byId["payroll.runs"].facade).toBe("payroll");
   });
+
+  test("derives the recruitment specialist op ids for the agent/* routes", () => {
+    const root = mkdtempSync(join(tmpdir(), "mcp-scan-rec-"));
+    const api = join(root, "api");
+    const mk = (p: string) => {
+      mkdirSync(join(api, p), { recursive: true });
+      writeFileSync(join(api, p, "route.ts"), "export async function GET() {}");
+    };
+    mk("hcm/recruitment/agent/rank");
+    mk("hcm/recruitment/agent/skill-gap");
+    mk("hcm/recruitment/agent/benchmark");
+    mk("hcm/recruitment/agent/interview-questions");
+    mk("hcm/recruitment/agent/recommendation");
+    mk("hcm/recruitment/agent/screen");
+
+    const ids = scanDir(api)
+      .map((o) => o.id)
+      .sort();
+    expect(ids).toEqual(
+      [
+        "recruitment.agent_benchmark",
+        "recruitment.agent_interview_questions",
+        "recruitment.agent_rank",
+        "recruitment.agent_recommendation",
+        "recruitment.agent_screen",
+        "recruitment.agent_skill_gap",
+      ].sort(),
+    );
+  });
 });
